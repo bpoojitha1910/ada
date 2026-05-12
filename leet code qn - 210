@@ -1,0 +1,44 @@
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define MAX 2000
+
+int* stack;
+int top;
+int state[MAX];
+int* adj[MAX];
+int adjSize[MAX];
+
+bool dfs(int v) {
+    if (state[v] == 1) return false; // cycle
+    if (state[v] == 2) return true;
+    state[v] = 1;
+    for (int i = 0; i < adjSize[v]; i++)
+        if (!dfs(adj[v][i])) return false;
+    state[v] = 2;
+    stack[top++] = v;
+    return true;
+}
+
+/** 
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* findOrder(int numCourses, int** prerequisites, int prerequisitesSize, int* prerequisitesColSize, int* returnSize) {
+    for (int i = 0; i < numCourses; i++) { adj[i] = malloc(0); adjSize[i] = 0; state[i] = 0; }
+    stack = malloc(numCourses * sizeof(int));
+    top = 0;
+
+    for (int i = 0; i < prerequisitesSize; i++) {
+        int a = prerequisites[i][0], b = prerequisites[i][1];
+        adj[b] = realloc(adj[b], (adjSize[b]+1)*sizeof(int));
+        adj[b][adjSize[b]++] = a;
+    }
+
+    for (int i = 0; i < numCourses; i++)
+        if (!dfs(i)) { *returnSize = 0; return malloc(0); }
+
+    int* res = malloc(numCourses * sizeof(int));
+    for (int i = 0; i < numCourses; i++) res[i] = stack[numCourses-1-i];
+    *returnSize = numCourses;
+    return res;
+}
