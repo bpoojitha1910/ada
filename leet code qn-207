@@ -1,0 +1,45 @@
+#include <stdbool.h>
+
+#define MAX 2000
+
+int graph[MAX][MAX];
+int state[MAX]; // 0 = unvisited, 1 = visiting, 2 = done
+
+bool dfs(int v, int n) {
+    if (state[v] == 1) return false; // cycle
+    if (state[v] == 2) return true;
+
+    state[v] = 1;
+    for (int i = 0; i < n; i++) {
+        if (graph[v][i] && !dfs(i, n))
+            return false;
+    }
+    state[v] = 2;
+    return true;
+}
+
+bool canFinish(int numCourses, int** prerequisites, int prerequisitesSize, int* prerequisitesColSize) {
+    
+    // init graph
+    for (int i = 0; i < numCourses; i++)
+        for (int j = 0; j < numCourses; j++)
+            graph[i][j] = 0;
+
+    // build graph
+    for (int i = 0; i < prerequisitesSize; i++) {
+        int a = prerequisites[i][0];
+        int b = prerequisites[i][1];
+        graph[b][a] = 1;
+    }
+
+    // init state
+    for (int i = 0; i < numCourses; i++)
+        state[i] = 0;
+
+    // check all nodes
+    for (int i = 0; i < numCourses; i++)
+        if (!dfs(i, numCourses))
+            return false;
+
+    return true;
+}
