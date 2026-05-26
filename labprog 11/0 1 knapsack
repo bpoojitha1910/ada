@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int main() {
+    int n, W, w[20], v[20], dp[21][101] = {0};
+
+    printf("Enter number of items: ");
+    scanf("%d", &n);
+
+    printf("Enter weights and profits:\n");
+    for(int i = 0; i < n; i++)
+        scanf("%d %d", &w[i], &v[i]);
+
+    printf("Enter knapsack capacity: ");
+    scanf("%d", &W);
+
+    for(int i = 1; i <= n; i++)
+        for(int j = 1; j <= W; j++)
+            dp[i][j] = (w[i-1] <= j) ?
+            ((v[i-1] + dp[i-1][j-w[i-1]] > dp[i-1][j]) ?
+            v[i-1] + dp[i-1][j-w[i-1]] : dp[i-1][j])
+            : dp[i-1][j];
+
+    printf("The maximum profit that can be obtained is %d.", dp[n][W]);
+
+    return 0;
+}
