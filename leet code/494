@@ -1,0 +1,10 @@
+int solve(int* nums, int n, int i, int sum, int target){
+    if(i==n) return sum==target;
+
+    return solve(nums,n,i+1,sum+nums[i],target) +
+           solve(nums,n,i+1,sum-nums[i],target);
+}
+
+int findTargetSumWays(int* nums, int numsSize, int target) {
+    return solve(nums, numsSize, 0, 0, target);
+}
