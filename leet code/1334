@@ -1,0 +1,30 @@
+#define INF 99999
+
+int findTheCity(int n, int** e, int m, int* c, int dT) {
+    int d[100][100], i, j, k;
+
+    for(i=0;i<n;i++)
+        for(j=0;j<n;j++)
+            d[i][j]=(i==j)?0:INF;
+
+    for(i=0;i<m;i++)
+        d[e[i][0]][e[i][1]] = d[e[i][1]][e[i][0]] = e[i][2];
+
+    for(k=0;k<n;k++)
+        for(i=0;i<n;i++)
+            for(j=0;j<n;j++)
+                if(d[i][k]+d[k][j] < d[i][j])
+                    d[i][j]=d[i][k]+d[k][j];
+
+    int city=-1, min=INF;
+
+    for(i=0;i<n;i++) {
+        int cnt=0;
+        for(j=0;j<n;j++)
+            if(i!=j && d[i][j]<=dT) cnt++;
+
+        if(cnt<=min) min=cnt, city=i;
+    }
+
+    return city;
+}
